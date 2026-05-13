@@ -1,0 +1,37 @@
+{
+  "name": "gas-delivery-app",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint"
+  },
+  "dependencies": {
+    "@emailjs/nodejs": "^5.0.2",
+    "date-fns": "^4.1.0",
+    "firebase": "^12.12.0",
+    "firebase-admin": "^13.8.0",
+    "lucide-react": "^1.8.0",
+    "mapbox-gl": "^3.23.1",
+    "next": "16.2.3",
+    "paystack-node": "^0.3.0",
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
+    "react-map-gl": "^7.1.7",
+    "resend": "^6.10.0",
+    "twilio": "^5.13.1",
+    "zustand": "^5.0.12"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.2.3",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  }
+}
