@@ -12,19 +12,21 @@ import { PartnerStatus } from "@/types/user";
 
 export const fetchPartnersByStatus = async (status?: PartnerStatus) => {
   const usersRef = collection(db, "users");
-  let q;
-  
-  if (status) {
-    q = query(usersRef, where("role", "==", "delivery"), where("status", "==", status));
-  } else {
-    q = query(usersRef, where("role", "==", "delivery"));
-  }
+  // Simple query to avoid needing a composite index which causes the INTERNAL ASSERTION FAILED error
+  const q = query(usersRef, where("role", "==", "delivery"));
   
   const snapshot = await getDocs(q);
-  return snapshot.docs.map(doc => ({
+  let partners = snapshot.docs.map(doc => ({
     uid: doc.id,
     ...doc.data()
   }));
+
+  // Perform the status filtering locally
+  if (status) {
+    partners = partners.filter((p: any) => p.status === status);
+  }
+
+  return partners;
 };
 
 export const updatePartnerStatus = async (

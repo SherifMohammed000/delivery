@@ -13,6 +13,7 @@ import { AuthInput } from "@/components/auth/AuthInput";
 import { SocialAuth } from "@/components/auth/SocialAuth";
 import { getRedirectPath, syncSession } from "@/lib/utils/auth";
 import { sendEmailNotification } from "@/lib/utils/email";
+import { sendPushNotification } from "@/lib/utils/notifications";
 import {
   Bike,
   MapPin,
@@ -145,6 +146,13 @@ export default function SignupPage() {
       });
       
       if (role === "delivery") {
+        // Send Push Notification to the rider
+        await sendPushNotification({
+          userId: user.uid,
+          title: "Application Submitted",
+          body: `Thank you, ${name}! Your application is pending review from admin.`,
+          data: { url: "/delivery" }
+        });
         setIsSubmitted(true);
       } else {
         router.push(getRedirectPath(role));

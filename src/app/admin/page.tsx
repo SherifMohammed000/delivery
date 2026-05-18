@@ -82,9 +82,8 @@ export default function AdminDashboard() {
           loadedRiders.push(userExt);
           if (data.status === "active") partnersCount++;
           if (data.status === "pending") pendingCount++;
-        } else if (data.role === "customer" || data.role === "admin") {
-          // Adding admins into customer view just for visibility, or strictly customers
-          if(data.role === "customer") customersCount++;
+        } else if (data.role === "customer") {
+          customersCount++;
           loadedCustomers.push(userExt);
         }
       });

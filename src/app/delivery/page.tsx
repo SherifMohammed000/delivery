@@ -68,6 +68,9 @@ export default function DeliveryDashboard() {
       const orders = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as Order[];
       setPendingOrders(orders);
       setLoading(false);
+    }, (error) => {
+      console.error("Pending orders listener error (likely missing index):", error);
+      setLoading(false);
     });
 
     // 3. Listen for Current Rider's Active Order
