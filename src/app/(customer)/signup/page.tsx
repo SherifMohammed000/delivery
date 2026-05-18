@@ -43,6 +43,8 @@ export default function SignupPage() {
   const [licenseFile, setLicenseFile] = useState<File | null>(null);
   const [photoBlob, setPhotoBlob] = useState<Blob | null>(null);
 
+  const [showInAppPush, setShowInAppPush] = useState(false);
+
   const [step, setStep] = useState(1);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [error, setError] = useState("");
@@ -144,6 +146,36 @@ export default function SignupPage() {
           company_logo: "https://ghova.vercel.app/ghova.png", // Update this with your actual live domain logo URL
         },
       });
+
+      // 6. Trigger Immediate Local System Notification
+      if (typeof window !== "undefined") {
+        setShowInAppPush(true);
+        setTimeout(() => setShowInAppPush(false), 5000);
+
+        if ("Notification" in window) {
+          try {
+            const sendLocalNotif = () => {
+              new Notification(role === "delivery" ? "Application Submitted" : "Account Created", {
+                body: role === "delivery" 
+                  ? `Thank you, ${name}! Your application is pending review from admin.`
+                  : `Welcome to GHo-VA, ${name}! Your customer account has been created successfully.`,
+                icon: "/icons/icon-192.png"
+              });
+            };
+
+            if (Notification.permission === "granted") {
+              sendLocalNotif();
+            } else if (Notification.permission !== "denied") {
+              Notification.requestPermission().then((permission) => {
+                if (permission === "granted") sendLocalNotif();
+              });
+            }
+          } catch (e) {
+            console.warn("Local notification failed:", e);
+          }
+        }
+      }
+      
       
       if (role === "delivery") {
         // Send Push Notification to the rider
@@ -194,7 +226,27 @@ export default function SignupPage() {
 
   if (isSubmitted) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-zinc-50 px-4 py-12">
+      <div className="flex min-h-screen items-center justify-center bg-zinc-50 px-4 py-12 relative overflow-hidden">
+        
+        {/* In-App Push Notification Simulator */}
+        {showInAppPush && (
+          <div className="fixed top-6 left-1/2 -translate-x-1/2 z-[100] animate-in slide-in-from-top-10 fade-in duration-500">
+            <div className="bg-white/90 backdrop-blur-md rounded-3xl shadow-2xl border border-zinc-100 p-4 flex items-center gap-4 w-[90vw] max-w-sm">
+              <div className="w-12 h-12 bg-zinc-900 rounded-2xl flex items-center justify-center shrink-0">
+                <span className="text-white font-black text-[10px] tracking-widest">G</span>
+              </div>
+              <div>
+                <p className="text-xs font-black uppercase text-zinc-900 tracking-tight mb-0.5">
+                  {role === "delivery" ? "Application Submitted" : "Account Created"}
+                </p>
+                <p className="text-[11px] font-bold text-zinc-500 leading-snug">
+                  {role === "delivery" ? `Thank you, ${name}! Your application is pending review.` : `Welcome to GHo-VA, ${name}! Your account is ready.`}
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
         <div className="w-full max-w-md bg-white rounded-[3rem] p-12 text-center shadow-2xl shadow-orange-100 border border-zinc-100 animate-in zoom-in-95 duration-500">
            <div className="w-24 h-24 bg-green-50 rounded-[2.5rem] flex items-center justify-center mx-auto mb-8 relative">
               <CheckCircle2 className="w-12 h-12 text-green-600 relative z-10" />
