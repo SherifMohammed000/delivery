@@ -4,7 +4,13 @@ import emailjs from "@emailjs/nodejs";
 
 // Initialize Admin SDK
 if (!admin.apps.length) {
-  const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_KEY!);
+  const serviceAccountEnv = process.env.FIREBASE_SERVICE_ACCOUNT_KEY;
+
+  if (!serviceAccountEnv) {
+    throw new Error("FIREBASE_SERVICE_ACCOUNT_KEY is missing");
+  }
+
+  const serviceAccount = JSON.parse(serviceAccountEnv);
   admin.initializeApp({
     credential: admin.credential.cert({
       projectId: serviceAccount.project_id,
@@ -53,10 +59,10 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ success: true });
   } catch (error: any) {
     console.error("Password reset error:", error);
-    
+
     // For security, return success if user not found
     if (error.code === 'auth/user-not-found') {
-        return NextResponse.json({ success: true });
+      return NextResponse.json({ success: true });
     }
 
     const errorMessage = error?.text || error?.message || "Unknown Error";
