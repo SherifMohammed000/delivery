@@ -22,7 +22,7 @@ admin.initializeApp({
 });
 
 const adminEmail = "0557138306@ghova.com";
-const adminPassword = "ghova1";
+const adminPassword = "Ghova000";
 const adminPhone = "0557138306";
 
 (async () => {

@@ -333,7 +333,7 @@ function OrderCard({ order }: { order: any }) {
           )}
 
           {/* Cancellation Button for Active Orders */}
-          {(order.status === "searching" || order.status === "assigned") && (
+          {isActive && order.status !== "delivered" && (
             <div className="px-6 pb-6">
               <button
                 onClick={handleCancelOrder}
@@ -376,6 +376,12 @@ export default function OrdersPage() {
     const unsub = onSnapshot(q, (snap) => {
       setOrders(snap.docs.map((d) => ({ id: d.id, ...d.data() })));
       setLoading(false);
+    }, (error) => {
+      console.error("Orders fetching error:", error);
+      // Stop loading so the user isn't stuck on a blank screen
+      setLoading(false);
+      // Usually this error is due to a missing composite index.
+      // The console will have a direct link to create it!
     });
 
     return () => unsub();
